@@ -388,11 +388,13 @@ window.OneSignalDeferred.push(async function(OneSignal) {
 async function requestNotificationPermission() {
     try {
         if (!oneSignalReady) {
-            alert("OneSignal chưa sẵn sàng. Kiểm tra App ID và Service Worker.");
+            alert("OneSignal đang khởi tạo, vui lòng chờ vài giây rồi bấm lại.");
             return;
         }
+
         await OneSignal.Notifications.requestPermission();
         updateNotificationStatus();
+
     } catch (error) {
         console.error("Notification permission error:", error);
         alert("Không thể bật thông báo. Hãy kiểm tra quyền thông báo của trình duyệt.");
@@ -402,18 +404,20 @@ async function requestNotificationPermission() {
 async function updateNotificationStatus() {
     try {
         if (!oneSignalReady) return;
+
         const permission = OneSignal.Notifications.permission;
         const status = document.getElementById("notificationStatus");
+
         if (permission === true) {
             status.textContent = "🟢 Đã cho phép thông báo trên thiết bị này.";
         } else {
             status.textContent = "🔴 Chưa cho phép thông báo. Nhấn 'Bật thông báo'.";
         }
+
     } catch (error) {
         console.error(error);
     }
 }
-
 // =========================
 // CHART CONFIG
 // =========================
