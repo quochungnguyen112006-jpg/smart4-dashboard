@@ -367,18 +367,31 @@ let sensorData = [];
 // ONESIGNAL
 // =========================
 let oneSignalReady = false;
+
 window.OneSignalDeferred = window.OneSignalDeferred || [];
+
 window.OneSignalDeferred.push(async function(OneSignal) {
     try {
         await OneSignal.init({
             appId: "4e288a67-5fb2-4249-aa99-be41582c25ef",
-            serviceWorkerPath: "OneSignalSDKWorker.js"
+            serviceWorkerPath: "/OneSignalSDKWorker.js",
+            serviceWorkerParam: {
+                scope: "/"
+            }
         });
+
         oneSignalReady = true;
         updateNotificationStatus();
+
     } catch (error) {
         console.error("OneSignal init error:", error);
-        document.getElementById("notificationStatus").textContent = "OneSignal chưa được cấu hình.";
+
+        oneSignalReady = false;
+
+        const status = document.getElementById("notificationStatus");
+        if (status) {
+            status.textContent = "OneSignal chưa sẵn sàng.";
+        }
     }
 });
 
