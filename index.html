@@ -92,7 +92,7 @@
                 <i class="fa-solid fa-file-csv mr-2"></i> Xuất CSV
             </button>
             <button onclick="clearHistory()" class="px-4 py-2 rounded-xl bg-red-600/20 hover:bg-red-600 text-red-400 hover:text-white text-sm font-medium transition border border-red-500/30 flex items-center">
-                <i class="fa-solid fa-trash mr-2"></i> Xóa lịch sử
+                <i class="fa-solid fa-trash mr-2"></i> Xóa dữ liệu
             </button>
         </div>
     </header>
@@ -227,11 +227,11 @@
         </div>
     </div>
 
-    <!-- STATISTICS -->
+    <!-- BASIC STATISTICS -->
     <div class="card p-6 mb-6">
         <h2 class="text-lg font-bold mb-5 flex items-center">
             <i class="fa-solid fa-chart-simple mr-2 text-cyan-400"></i>
-            Thống kê
+            Thống kê Biên độ (Min / Max)
         </h2>
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800">
@@ -253,14 +253,66 @@
         </div>
     </div>
 
-    <!-- HISTORY -->
+    <!-- ADVANCED STATISTICS & ANALYTICS (REPLACED HISTORY) -->
     <div class="card p-6">
         <h2 class="text-lg font-bold mb-5 flex items-center">
-            <i class="fa-solid fa-clock-rotate-left mr-2 text-purple-400"></i>
-            Lịch sử cảnh báo
+            <i class="fa-solid fa-chart-pie mr-2 text-purple-400"></i>
+            Phân tích & Thống kê Tổng quan Hệ thống
         </h2>
-        <div id="alertHistory" class="space-y-3">
-            <p class="text-slate-400 text-sm">Chưa có dữ liệu cảnh báo.</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <!-- Trung bình -->
+            <div class="bg-slate-900/60 rounded-xl p-5 border border-slate-800">
+                <div class="flex items-center justify-between">
+                    <p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Giá trị trung bình</p>
+                    <i class="fa-solid fa-calculator text-purple-400"></i>
+                </div>
+                <div class="mt-3 space-y-2">
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-slate-400">Nhiệt độ TB:</span>
+                        <span id="avgTemp" class="font-bold text-orange-400">-- °C</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-slate-400">Khí Gas TB:</span>
+                        <span id="avgGas" class="font-bold text-cyan-400">-- PPM</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tổng bản tin -->
+            <div class="bg-slate-900/60 rounded-xl p-5 border border-slate-800">
+                <div class="flex items-center justify-between">
+                    <p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Lưu lượng dữ liệu</p>
+                    <i class="fa-solid fa-database text-blue-400"></i>
+                </div>
+                <div class="mt-3 space-y-2">
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-slate-400">Tổng bản ghi nhận:</span>
+                        <span id="totalPackets" class="font-bold text-white">0</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-slate-400">Tổng số cảnh báo:</span>
+                        <span id="totalAlertsCount" class="font-bold text-rose-400">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tình trạng môi trường -->
+            <div class="bg-slate-900/60 rounded-xl p-5 border border-slate-800">
+                <div class="flex items-center justify-between">
+                    <p class="text-slate-400 text-xs font-medium uppercase tracking-wider">Đánh giá an toàn</p>
+                    <i class="fa-solid fa-shield-halved text-emerald-400"></i>
+                </div>
+                <div class="mt-3 space-y-2">
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-slate-400">Trạng thái chung:</span>
+                        <span id="systemHealthStatus" class="font-bold text-emerald-400">Đang đồng bộ...</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-slate-400">Tỷ lệ an toàn:</span>
+                        <span id="safetyRate" class="font-bold text-cyan-300">100%</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -363,7 +415,7 @@ async function updateNotificationStatus() {
 }
 
 // =========================
-// CHART CONFIG (Đổi màu hai biểu đồ rõ ràng)
+// CHART CONFIG
 // =========================
 const commonChartOptions = (yAxisBeginAtZero = false) => ({
     responsive: true,
@@ -391,7 +443,7 @@ const tempChart = new Chart(document.getElementById("tempChart"), {
         datasets: [{
             label: "Nhiệt độ °C",
             data: [],
-            borderColor: "#fb923c", // Màu cam ấm
+            borderColor: "#fb923c",
             backgroundColor: "rgba(251, 146, 60, 0.1)",
             fill: true,
             tension: 0.35,
@@ -409,7 +461,7 @@ const gasChart = new Chart(document.getElementById("gasChart"), {
         datasets: [{
             label: "Gas PPM",
             data: [],
-            borderColor: "#22d3ee", // Màu xanh ngọc (cyan) rõ ràng, khác biệt hoàn toàn với cam
+            borderColor: "#22d3ee",
             backgroundColor: "rgba(34, 211, 238, 0.1)",
             fill: true,
             tension: 0.35,
@@ -513,7 +565,7 @@ function updateDashboard() {
     updateAlertMessage(tempAlert, gasAlert, temp, gas);
     updateCharts();
     updateStatistics();
-    updateAlertHistory();
+    updateAdvancedAnalytics();
 }
 
 function setLed(id, active) {
@@ -568,30 +620,39 @@ function updateStatistics() {
     document.getElementById("gasMin").textContent = `${Math.round(Math.min(...gases))} PPM`;
 }
 
-function updateAlertHistory() {
-    const container = document.getElementById("alertHistory");
-    const alerts = sensorData.filter(item => item.temp_alert || item.gas_alert).slice(-10).reverse();
+function updateAdvancedAnalytics() {
+    if (!sensorData.length) return;
+    const total = sensorData.length;
+    const temps = sensorData.map(item => Number(item.temp));
+    const gases = sensorData.map(item => Number(item.gas));
 
-    if (!alerts.length) {
-        container.innerHTML = `<p class="text-slate-400 text-sm">Chưa có dữ liệu cảnh báo.</p>`;
-        return;
+    // Tính trung bình
+    const avgTempVal = temps.reduce((a, b) => a + b, 0) / total;
+    const avgGasVal = gases.reduce((a, b) => a + b, 0) / total;
+
+    document.getElementById("avgTemp").textContent = `${avgTempVal.toFixed(1)} °C`;
+    document.getElementById("avgGas").textContent = `${Math.round(avgGasVal)} PPM`;
+    document.getElementById("totalPackets").textContent = total;
+
+    // Đếm số lượng bản ghi cảnh báo
+    const alertPackets = sensorData.filter(item => item.temp_alert || item.gas_alert).length;
+    document.getElementById("totalAlertsCount").textContent = alertPackets;
+
+    // Tỷ lệ an toàn
+    const safetyPercentage = ((total - alertPackets) / total * 100).toFixed(1);
+    document.getElementById("safetyRate").textContent = `${safetyPercentage}%`;
+
+    const healthStatusEl = document.getElementById("systemHealthStatus");
+    if (alertPackets === 0) {
+        healthStatusEl.className = "font-bold text-emerald-400";
+        healthStatusEl.textContent = "Ổn định tuyệt đối";
+    } else if (safetyPercentage > 90) {
+        healthStatusEl.className = "font-bold text-amber-400";
+        healthStatusEl.textContent = "Có cảnh báo rải rác";
+    } else {
+        healthStatusEl.className = "font-bold text-rose-400";
+        healthStatusEl.textContent = "Cần kiểm tra môi trường";
     }
-
-    container.innerHTML = alerts.map(item => {
-        const time = new Date(item.created_at).toLocaleString("vi-VN");
-        let message = item.temp_alert && item.gas_alert ? "Nhiệt độ + khí gas vượt ngưỡng" : (item.temp_alert ? "Nhiệt độ vượt ngưỡng" : "Khí gas vượt ngưỡng");
-        return `
-            <div class="p-4 rounded-xl bg-rose-500/5 border border-rose-500/20">
-                <div class="flex justify-between gap-3">
-                    <span class="text-rose-300 font-semibold text-sm">🚨 ${message}</span>
-                    <span class="text-xs text-slate-400">${time}</span>
-                </div>
-                <div class="text-xs text-slate-300 mt-2">
-                    Temp: ${Number(item.temp).toFixed(1)} °C &nbsp; | &nbsp; Gas: ${Math.round(Number(item.gas))} PPM
-                </div>
-            </div>
-        `;
-    }).join("");
 }
 
 function openWiFiConfig() {
@@ -603,17 +664,17 @@ function closeWiFiConfig() {
 }
 
 async function clearHistory() {
-    if (!confirm("Mày có chắc muốn xóa toàn bộ lịch sử?")) return;
+    if (!confirm("Bạn có chắc muốn xóa toàn bộ dữ liệu hệ thống?")) return;
     try {
         const response = await fetch(`${API_URL}/reset`, { method: "DELETE" });
         if (!response.ok) throw new Error("Xóa thất bại");
         sensorData = [];
         updateDashboard();
         await loadData();
-        alert("Đã xóa lịch sử.");
+        alert("Đã xóa dữ liệu.");
     } catch (error) {
         console.error(error);
-        alert("Không thể xóa lịch sử.");
+        alert("Không thể xóa dữ liệu.");
     }
 }
 
