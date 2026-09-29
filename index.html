@@ -144,7 +144,7 @@
                 <div>
                     <p class="text-slate-400 text-sm font-medium">Khí Gas</p>
                     <h2 id="gasValue" class="text-4xl md:text-5xl font-extrabold mt-2 tracking-tight text-rose-400">
-                        ---- PPM
+                        ---- ADC
                     </h2>
                 </div>
                 <div class="w-12 h-12 rounded-2xl bg-rose-500/10 flex items-center justify-center text-rose-400 text-2xl border border-rose-500/20">
@@ -244,11 +244,11 @@
             </div>
             <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800">
                 <p class="text-slate-400 text-xs font-medium">Gas Max</p>
-                <p id="gasMax" class="text-xl font-bold mt-1 text-rose-400">-- PPM</p>
+                <p id="gasMax" class="text-xl font-bold mt-1 text-rose-400">-- ADC</p>
             </div>
             <div class="bg-slate-900/60 rounded-xl p-4 border border-slate-800">
                 <p class="text-slate-400 text-xs font-medium">Gas Min</p>
-                <p id="gasMin" class="text-xl font-bold mt-1 text-cyan-300">-- PPM</p>
+                <p id="gasMin" class="text-xl font-bold mt-1 text-cyan-300">-- ADC</p>
             </div>
         </div>
     </div>
@@ -273,7 +273,7 @@
                     </div>
                     <div class="flex justify-between items-center text-sm">
                         <span class="text-slate-400">Khí Gas TB:</span>
-                        <span id="avgGas" class="font-bold text-cyan-400">-- PPM</span>
+                        <span id="avgGas" class="font-bold text-cyan-400">-- ADC</span>
                     </div>
                 </div>
             </div>
@@ -476,7 +476,7 @@ const gasChart = new Chart(document.getElementById("gasChart"), {
     data: {
         labels: [],
         datasets: [{
-            label: "Gas PPM",
+            label: "Gas ADC",
             data: [],
             borderColor: "#22d3ee",
             backgroundColor: "rgba(34, 211, 238, 0.1)",
@@ -554,7 +554,7 @@ function updateDashboard() {
     const gasAlert = Boolean(latest.gas_alert);
 
     document.getElementById("tempValue").textContent = `${temp.toFixed(1)} °C`;
-    document.getElementById("gasValue").textContent = `${Math.round(gas)} PPM`;
+    document.getElementById("gasValue").textContent = `${Math.round(gas)} ADC`;
 
     const tempState = document.getElementById("tempState");
     if (tempAlert) {
@@ -605,11 +605,11 @@ function updateAlertMessage(tempAlert, gasAlert, temp, gas) {
     }
     box.className = "mt-5 p-4 rounded-xl bg-rose-500/10 text-rose-300 text-sm border border-rose-500/20";
     if (tempAlert && gasAlert) {
-        box.innerHTML = `🚨 CẢNH BÁO: Nhiệt độ ${temp.toFixed(1)}°C và khí gas ${Math.round(gas)} PPM đều vượt ngưỡng.`;
+        box.innerHTML = `🚨 CẢNH BÁO: Nhiệt độ ${temp.toFixed(1)}°C và khí gas ${Math.round(gas)} ADC đều vượt ngưỡng.`;
     } else if (tempAlert) {
         box.innerHTML = `🚨 CẢNH BÁO: Nhiệt độ ${temp.toFixed(1)}°C vượt ${TEMP_LIMIT}°C.`;
     } else {
-        box.innerHTML = `🚨 CẢNH BÁO: Khí gas ${Math.round(gas)} PPM vượt ${GAS_LIMIT} PPM.`;
+        box.innerHTML = `🚨 CẢNH BÁO: Khí gas ${Math.round(gas)} ADC vượt ${GAS_LIMIT} ADC.`;
     }
 }
 
@@ -633,8 +633,8 @@ function updateStatistics() {
 
     document.getElementById("tempMax").textContent = `${Math.max(...temps).toFixed(1)} °C`;
     document.getElementById("tempMin").textContent = `${Math.min(...temps).toFixed(1)} °C`;
-    document.getElementById("gasMax").textContent = `${Math.round(Math.max(...gases))} PPM`;
-    document.getElementById("gasMin").textContent = `${Math.round(Math.min(...gases))} PPM`;
+    document.getElementById("gasMax").textContent = `${Math.round(Math.max(...gases))} ADC`;
+    document.getElementById("gasMin").textContent = `${Math.round(Math.min(...gases))} ADC`;
 }
 
 function updateAdvancedAnalytics() {
@@ -648,7 +648,7 @@ function updateAdvancedAnalytics() {
     const avgGasVal = gases.reduce((a, b) => a + b, 0) / total;
 
     document.getElementById("avgTemp").textContent = `${avgTempVal.toFixed(1)} °C`;
-    document.getElementById("avgGas").textContent = `${Math.round(avgGasVal)} PPM`;
+    document.getElementById("avgGas").textContent = `${Math.round(avgGasVal)} ADC`;
     document.getElementById("totalPackets").textContent = total;
 
     // Đếm số lượng bản ghi cảnh báo
